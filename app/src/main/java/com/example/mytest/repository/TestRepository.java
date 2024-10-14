@@ -16,17 +16,20 @@ public class TestRepository {
     public TestRepository(FirebaseFirestore db){
         testCollection = db.collection("tests");
     }
-    public void addTest(Test test) {
+
+    public Test addTest(Test test) {
         String testId = testCollection.document().getId();
         test.setId(testId);
         testCollection.document(testId).set(test);
+        return test;
     }
+
     public void deleteTest(Test test) {
         testCollection.document(test.getId()).delete();
     }
 
-    public void updateTest(Test test, Test newTest) {
-        testCollection.document(test.getId()).set(newTest);
+    public void updateTest(Test test) {
+        testCollection.document(test.getId()).set(test);
     }
     public CompletableFuture<List<Test>> getAllTest() {
         CompletableFuture<List<Test>> future = new CompletableFuture<>();
@@ -38,6 +41,34 @@ public class TestRepository {
                 testList.add(test);
             }
             future.complete(testList);
+        });
+
+        return future;
+    }
+
+    public CompletableFuture<List<Test>> getAllTestByTeacherId(String id) {
+        CompletableFuture<List<Test>> future = new CompletableFuture<>();
+        List<Test> testList = new ArrayList<>();
+
+        testCollection.whereEqualTo("teacherId", id).get().addOnCompleteListener(task -> {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                Test test = document.toObject(Test.class);
+                testList.add(test);
+            }
+            future.complete(testList);
+        });
+
+        return future;
+    }
+
+    public CompletableFuture<Test> getById(String testId) {
+        CompletableFuture<Test> future = new CompletableFuture<>();
+
+        testCollection.whereEqualTo("id", testId).get().addOnCompleteListener(task -> {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                Test test = document.toObject(Test.class);
+                future.complete(test);
+            }
         });
 
         return future;

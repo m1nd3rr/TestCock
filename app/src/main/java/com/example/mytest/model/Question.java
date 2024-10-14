@@ -7,13 +7,15 @@ public class Question implements Serializable {
     private String title;
     private String type;
     private String photo;
+    private String testId;
 
 
-    public Question(String id, String title, String type,String photo) {
+    public Question(String id, String title, String type, String photo, String testId) {
         this.id = id;
         this.title = title;
         this.type = type;
         this.photo = photo;
+        this.testId = testId;
     }
 
     public Question() {
@@ -49,5 +51,13 @@ public class Question implements Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
     }
 }

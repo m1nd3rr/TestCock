@@ -29,11 +29,27 @@ public class QuestionRepository {
     public void updateQuestion(Question question) {
         questionCollection.document(question.getId()).set(question);
     }
-        public CompletableFuture<List<Question>> getAllQuestion() {
+
+    public CompletableFuture<List<Question>> getAllQuestion() {
         CompletableFuture<List<Question>> future = new CompletableFuture<>();
         List<Question> questionList = new ArrayList<>();
 
         questionCollection.get().addOnCompleteListener(task -> {
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                Question question = document.toObject(Question.class);
+                questionList.add(question);
+            }
+            future.complete(questionList);
+        });
+
+        return future;
+    }
+
+    public CompletableFuture<List<Question>> getAllQuestionByTestId(String id) {
+        CompletableFuture<List<Question>> future = new CompletableFuture<>();
+        List<Question> questionList = new ArrayList<>();
+
+        questionCollection.whereEqualTo("testId", id).get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 Question question = document.toObject(Question.class);
                 questionList.add(question);

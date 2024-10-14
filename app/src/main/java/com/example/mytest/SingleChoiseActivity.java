@@ -18,6 +18,7 @@ import com.example.mytest.model.Answer;
 import com.example.mytest.model.Question;
 import com.example.mytest.repository.AnswerRepository;
 import com.example.mytest.repository.QuestionRepository;
+import com.example.mytest.repository.TestRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class SingleChoiseActivity extends AppCompatActivity {
     EditText editText;
     private AnswerRepository answerRepository;
     private QuestionRepository questionRepository;
+    private TestRepository testRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class SingleChoiseActivity extends AppCompatActivity {
 
         answerRepository = new AnswerRepository(FirebaseFirestore.getInstance());
         questionRepository = new QuestionRepository(FirebaseFirestore.getInstance());
+        testRepository = new TestRepository(FirebaseFirestore.getInstance());
+
         RecyclerView recyclerView = findViewById(R.id.rvAnswerList);
         answerRepository.getAllAnswerById(question.getId())
                 .thenAccept(list -> {
@@ -76,12 +80,15 @@ public class SingleChoiseActivity extends AppCompatActivity {
     }
 
     public void ClickOnCreateTest(View view) {
-        question.setTitle(editText.getText().toString());
 
-        questionRepository.updateQuestion(question);
-
-        Intent intent = new Intent(this,CreateTestActivity.class);
-        startActivity(intent);
-        finish();
+        testRepository.getById(question.getTestId())
+                        .thenAccept(test -> {
+                            question.setTitle(editText.getText().toString());
+                            questionRepository.updateQuestion(question);
+                            Intent intent = new Intent(this,CreateTestActivity.class);
+                            intent.putExtra("TEST", test);
+                            startActivity(intent);
+                            finish();
+                        });
     }
 }
