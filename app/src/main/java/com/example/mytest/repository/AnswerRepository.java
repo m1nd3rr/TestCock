@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -56,6 +57,21 @@ public class AnswerRepository {
             }
             future.complete(answersList);
         });
+
+        return future;
+    }
+
+    public CompletableFuture<Boolean> checkCorrectAnswer(String id){
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        answerCollection.whereEqualTo("questionId", id).get()
+                .addOnCompleteListener(task -> {
+                   boolean fl = true;
+                   for(QueryDocumentSnapshot document : task.getResult()) {
+                       Answer answer = document.toObject(Answer.class);
+                       if(answer.isCorrect()) fl = false;
+                   }
+                   future.complete(fl);
+                });
 
         return future;
     }

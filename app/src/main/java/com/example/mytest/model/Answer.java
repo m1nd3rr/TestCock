@@ -5,15 +5,19 @@ public class Answer {
     private String content;
     private boolean correct;
     private String questionId;
+    private int sortNumber;
+    private String text;
 
     public Answer() {
     }
 
-    public Answer(String id, String content, boolean correct, String questionId) {
+    public Answer(String id, String content, Boolean correct, String questionId, int sortNumber, String text) {
         this.id = id;
         this.content = content;
         this.correct = correct;
         this.questionId = questionId;
+        this.sortNumber = sortNumber;
+        this.text = text;
     }
 
     public String getId() {
@@ -46,5 +50,21 @@ public class Answer {
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public int getSortNumber() {
+        return sortNumber;
+    }
+
+    public void setSortNumber(int sortNumber) {
+        this.sortNumber = sortNumber;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mytest.R;
 import com.example.mytest.model.Answer;
+import com.example.mytest.model.Question;
 import com.example.mytest.repository.AnswerRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -24,16 +25,19 @@ import java.util.List;
 public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerViewHolder> {
     private final List<Answer> answerList;
     private final Context context;
-    public AnswerAdapter(List<Answer> answerList, Context context) {
+    private final Question question;
+
+    public AnswerAdapter(List<Answer> answerList, Context context, Question question) {
         this.answerList = answerList;
         this.context = context;
+        this.question = question;
     }
 
     @NonNull
     @Override
     public AnswerAdapter.AnswerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.answer_item_list, parent, false);
-        return new AnswerAdapter.AnswerViewHolder(view, this, answerList);
+        return new AnswerAdapter.AnswerViewHolder(view, this, answerList, question);
     }
     @Override
     public void onBindViewHolder(@NonNull AnswerAdapter.AnswerViewHolder holder, int position) {
@@ -45,56 +49,239 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
     public int getItemCount() {
         return answerList.size();
     }
-    static class AnswerViewHolder extends RecyclerView.ViewHolder{
+    static class AnswerViewHolder extends RecyclerView.ViewHolder {
         private final TextView text;
         private final AnswerRepository answerRepository;
         private final AnswerAdapter answerAdapter;
         private final List<Answer> answerList;
+        private final Question question;
 
-        public AnswerViewHolder(@NonNull View itemView, AnswerAdapter answerAdapter, List<Answer> answerList) {
+        public AnswerViewHolder(@NonNull View itemView, AnswerAdapter answerAdapter, List<Answer> answerList, Question question) {
             super(itemView);
             text = itemView.findViewById(R.id.answer_item);
             this.answerAdapter = answerAdapter;
             this.answerList = answerList;
+            this.question = question;
             answerRepository = new AnswerRepository(FirebaseFirestore.getInstance());
         }
 
         public void bind(Answer answer) {
             text.setText(answer.getContent());
 
-            text.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LayoutInflater inflater = LayoutInflater.from(v.getContext());
-                    View dialogView = inflater.inflate(R.layout.dialog_answer, null);
+            switch (question.getType()) {
+                case "multi-choice":
+                    multiChoose(answer);
+                    break;
+                case "single-choice":
+                    singleChoose(answer);
+                    break;
+                case "true-false":
+                    trueFalse(answer);
+                    break;
+                case "sort":
+                    sort(answer);
+                    break;
+                case "text":
+                    text(answer);
+                    break;
+                case "connect":
+                    connect(answer);
+                    break;
+            }
+        }
 
-                    EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
-                    CheckBox checkBox = dialogView.findViewById(R.id.dialog_answer_checkBox);
+        private void multiChoose(Answer answer) {
+            text.setOnClickListener(v -> {
+                LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_answer, null);
 
-                    editText.setText(answer.getContent());
-                    checkBox.setChecked(answer.isCorrect());
+                EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
+                CheckBox checkBox = dialogView.findViewById(R.id.dialog_answer_checkBox);
 
-                    AlertDialog dialog = new AlertDialog.Builder(v.getContext())
-                            .setTitle("Отредактируйте ответ")
-                            .setView(dialogView)
-                            .setPositiveButton("Обновить", (dialog1, which) -> {
+                editText.setText(answer.getContent());
+                checkBox.setChecked(answer.isCorrect());
 
-                                answer.setContent(editText.getText().toString());
-                                answer.setCorrect(checkBox.isChecked());
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                        .setTitle("Отредактируйте ответ")
+                        .setView(dialogView)
+                        .setPositiveButton("Обновить", (dialog1, which) -> {
+                            answer.setContent(editText.getText().toString());
+                            answer.setCorrect(checkBox.isChecked());
 
-                                answerRepository.updateAnswer(answer);
-                                answerAdapter.notifyItemChanged(getAdapterPosition());
-                            })
-                            .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerRepository.updateAnswer(answer);
+                            answerAdapter.notifyItemChanged(getAdapterPosition());
+                        })
+                        .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerList.remove(getAdapterPosition());
+                            answerRepository.deleteAnswer(answer);
+                            answerAdapter.notifyItemRemoved(getAdapterPosition());
+                        })
+                        .create();
 
-                                answerList.remove(getAdapterPosition());
-                                answerRepository.deleteAnswer(answer);
-                                answerAdapter.notifyItemRemoved(getAdapterPosition());
-                            })
-                            .create();
+                dialog.show();
+            });
+        }
 
-                    dialog.show();
-                }
+        private void singleChoose(Answer answer) {
+            text.setOnClickListener(v -> {
+                LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_answer, null);
+
+                EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
+                CheckBox checkBox = dialogView.findViewById(R.id.dialog_answer_checkBox);
+
+                editText.setText(answer.getContent());
+                checkBox.setChecked(answer.isCorrect());
+
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                        .setTitle("Отредактируйте ответ")
+                        .setView(dialogView)
+                        .setPositiveButton("Обновить", (dialog1, which) -> {
+                            answerRepository.checkCorrectAnswer(question.getId())
+                                    .thenAccept(correct -> {
+                                        if (correct || !checkBox.isChecked()) {
+                                            answer.setContent(editText.getText().toString());
+                                            answer.setCorrect(checkBox.isChecked());
+
+                                            answerRepository.updateAnswer(answer);
+                                            answerAdapter.notifyItemChanged(getAdapterPosition());
+                                        }
+                                    });
+                        })
+                        .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerList.remove(getAdapterPosition());
+                            answerRepository.deleteAnswer(answer);
+                            answerAdapter.notifyItemRemoved(getAdapterPosition());
+                        })
+                        .create();
+
+                dialog.show();
+            });
+        }
+
+        private void sort(Answer answer) {
+            text.setOnClickListener(v -> {
+                LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_sort, null);
+
+                EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
+                EditText editText1 = dialogView.findViewById(R.id.dialog_answer_sort_number);
+
+                editText.setText(answer.getContent());
+                editText1.setText(String.valueOf(answer.getSortNumber()));
+
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                        .setTitle("Отредактируйте ответ")
+                        .setView(dialogView)
+                        .setPositiveButton("Обновить", (dialog1, which) -> {
+                            answer.setContent(editText.getText().toString());
+                            answer.setSortNumber(Integer.valueOf(editText1.getText().toString()));
+
+                            answerRepository.updateAnswer(answer);
+                            answerAdapter.notifyItemChanged(getAdapterPosition());
+                        })
+                        .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerList.remove(getAdapterPosition());
+                            answerRepository.deleteAnswer(answer);
+                            answerAdapter.notifyItemRemoved(getAdapterPosition());
+                        })
+                        .create();
+
+                dialog.show();
+            });
+        }
+
+        private void text(Answer answer) {
+            text.setOnClickListener(v -> {
+                LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                View dialogView = inflater.inflate(R.layout.diaolog_text, null);
+
+                EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
+
+                editText.setText(answer.getContent());
+
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                        .setTitle("Отредактируйте ответ")
+                        .setView(dialogView)
+                        .setPositiveButton("Обновить", (dialog1, which) -> {
+                            answer.setContent(editText.getText().toString());
+
+                            answerRepository.updateAnswer(answer);
+                            answerAdapter.notifyItemChanged(getAdapterPosition());
+                        })
+                        .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerList.remove(getAdapterPosition());
+                            answerRepository.deleteAnswer(answer);
+                            answerAdapter.notifyItemRemoved(getAdapterPosition());
+                        })
+                        .create();
+
+                dialog.show();
+            });
+        }
+
+        private void connect(Answer answer) {
+            text.setOnClickListener(v -> {
+                LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_connect, null);
+
+                EditText editText = dialogView.findViewById(R.id.dialog_answer_editTex);
+                EditText editText1 = dialogView.findViewById(R.id.dialog_answer_editText2);
+
+                editText.setText(answer.getContent());
+                editText1.setText(answer.getText());
+
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                        .setTitle("Отредактируйте ответ")
+                        .setView(dialogView)
+                        .setPositiveButton("Обновить", (dialog1, which) -> {
+                            answer.setContent(editText.getText().toString());
+                            answer.setText(editText1.getText().toString());
+
+                            answerRepository.updateAnswer(answer);
+                            answerAdapter.notifyItemChanged(getAdapterPosition());
+                        })
+                        .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerList.remove(getAdapterPosition());
+                            answerRepository.deleteAnswer(answer);
+                            answerAdapter.notifyItemRemoved(getAdapterPosition());
+                        })
+                        .create();
+
+                dialog.show();
+            });
+        }
+        private void trueFalse(Answer answer){
+            text.setOnClickListener(v -> {
+                LayoutInflater inflater = LayoutInflater.from(v.getContext());
+                View dialogView = inflater.inflate(R.layout.dialog_truefalse, null);
+
+                CheckBox checkBox = dialogView.findViewById(R.id.dialog_answer_checkBox);
+
+                checkBox.setChecked(answer.isCorrect());
+
+                AlertDialog dialog = new AlertDialog.Builder(v.getContext())
+                        .setTitle("Отредактируйте ответ")
+                        .setView(dialogView)
+                        .setPositiveButton("Обновить", (dialog1, which) -> {
+                            answerRepository.checkCorrectAnswer(question.getId())
+                                    .thenAccept(correct -> {
+                                        if (correct || !checkBox.isChecked()) {
+                                            answer.setCorrect(checkBox.isChecked());
+
+                                            answerRepository.updateAnswer(answer);
+                                            answerAdapter.notifyItemChanged(getAdapterPosition());
+                                        }
+                                    });
+                        })
+                        .setNegativeButton("Удалить", (dialog12, which) -> {
+                            answerList.remove(getAdapterPosition());
+                            answerRepository.deleteAnswer(answer);
+                            answerAdapter.notifyItemRemoved(getAdapterPosition());
+                        })
+                        .create();
+
+                dialog.show();
             });
         }
     }

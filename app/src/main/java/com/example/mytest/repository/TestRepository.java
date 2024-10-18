@@ -2,11 +2,13 @@ package com.example.mytest.repository;
 
 import com.example.mytest.model.Student;
 import com.example.mytest.model.Test;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,6 +22,7 @@ public class TestRepository {
     public Test addTest(Test test) {
         String testId = testCollection.document().getId();
         test.setId(testId);
+        test.setTimestamp(Timestamp.now());
         testCollection.document(testId).set(test);
         return test;
     }
@@ -55,6 +58,7 @@ public class TestRepository {
                 Test test = document.toObject(Test.class);
                 testList.add(test);
             }
+            testList.sort(Comparator.comparing(Test::getTimestamp));
             future.complete(testList);
         });
 

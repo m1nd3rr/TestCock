@@ -4,7 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".QuestionSettingActivity">
+
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Назад"
+        android:onClick="onBack"
+        android:src="@drawable/back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewChooseType"
@@ -58,9 +71,12 @@
             android:backgroundTint="#4D9EE6"
             android:drawableTop="@drawable/multi_choice"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"/>
+            android:paddingTop="10dp"
+            android:onClick="ClickOnMultiChoise"
+            />
 
         <Button
+            android:onClick="ClickOnSort"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
@@ -75,6 +91,7 @@
             android:paddingTop="20dp"/>
 
         <Button
+            android:onClick="ClickOnText"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
@@ -89,13 +106,14 @@
             android:paddingTop="20dp"/>
 
         <Button
+            android:onClick="ClickOnTrueFalse"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_margin="8dp"
             android:gravity="bottom|center"
-            android:text="Ответ картинкой"
+            android:text="Да или нет"
             app:cornerRadius="15dp"
             android:backgroundTint="#4D9EE6"
             android:drawableTop="@drawable/photo"
@@ -103,6 +121,7 @@
             android:paddingTop="20dp"/>
 
         <Button
+            android:onClick="ClickOnConnect"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"

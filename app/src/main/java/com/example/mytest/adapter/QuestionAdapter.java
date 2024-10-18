@@ -10,12 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mytest.CreateTestActivity;
 import com.example.mytest.R;
-import com.example.mytest.SingleChoiseActivity;
+import com.example.mytest.QuestionActivity;
 import com.example.mytest.model.Question;
-import com.example.mytest.repository.QuestionRepository;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -60,7 +57,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
             text.setText("Вопрос " + (getAdapterPosition() + 1));
 
             text.setOnClickListener(view -> {
-                Intent intent = new Intent(context, SingleChoiseActivity.class);
+                Intent intent = new Intent(context, QuestionActivity.class);
                 intent.putExtra("QUESTION", question);
                 context.startActivity(intent);
             });

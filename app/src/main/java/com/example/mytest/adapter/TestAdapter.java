@@ -12,11 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mytest.CreateTestActivity;
 import com.example.mytest.R;
-import com.example.mytest.SingleChoiseActivity;
-import com.example.mytest.model.Question;
 import com.example.mytest.model.Test;
-import com.example.mytest.repository.QuestionRepository;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 

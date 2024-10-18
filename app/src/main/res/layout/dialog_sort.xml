@@ -13,11 +13,13 @@
         android:inputType="text"/>
 
 
-    <CheckBox
-        android:id="@+id/dialog_answer_checkBox"
+    <EditText
+        android:hint="№ ответа"
+        android:id="@+id/dialog_answer_sort_number"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:inputType="number"
         android:layout_height="wrap_content"
-        android:text="верно"/>
+        android:layout_weight="1"
+        />
 
 </LinearLayout>

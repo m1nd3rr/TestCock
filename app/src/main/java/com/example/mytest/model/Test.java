@@ -1,19 +1,23 @@
 package com.example.mytest.model;
 
+import com.google.firebase.Timestamp;
+
 import java.io.Serializable;
 
 public class Test implements Serializable {
     private String teacherId;
     private String title;
+    private transient Timestamp timestamp;
 
     private String id;
 
     public Test() {
     }
 
-    public Test(String teacherId, String title, String id) {
+    public Test(String teacherId, String title, Timestamp timestamp, String id) {
         this.teacherId = teacherId;
         this.title = title;
+        this.timestamp = timestamp;
         this.id = id;
     }
 
@@ -39,5 +43,13 @@ public class Test implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 }

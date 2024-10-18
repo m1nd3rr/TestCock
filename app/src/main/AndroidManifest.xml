@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MyTest"
         tools:targetApi="31">
         <activity
-            android:name=".SingleChoiseActivity"
+            android:name=".QuestionActivity"
             android:exported="false" />
         <activity
             android:name=".QuestionSettingActivity"

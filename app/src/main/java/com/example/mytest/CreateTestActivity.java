@@ -19,6 +19,7 @@ import com.example.mytest.repository.TestRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CreateTestActivity extends AppCompatActivity {
@@ -73,5 +74,10 @@ public class CreateTestActivity extends AppCompatActivity {
             startActivity(intentProfile);
             finish();
         });
+    }
+    public void onBackButtonClick(View view) {
+        Intent intent = new Intent(CreateTestActivity.this, CreateTestActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

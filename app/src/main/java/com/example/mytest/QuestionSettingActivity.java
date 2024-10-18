@@ -21,10 +21,55 @@ public class QuestionSettingActivity extends AppCompatActivity {
         question = (Question)intent.getSerializableExtra("QUESTION");
     }
 
-    public void ClickOnOneChoise(View view) {
-        Intent intent = new Intent(QuestionSettingActivity.this, SingleChoiseActivity.class);
-        intent.putExtra("QUESTION", question);
-        intent.putExtra("TYPE", "single-choice");
+    public void onBack(View view) {
+        Intent intent = new Intent(QuestionSettingActivity.this, CreateTestActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+
+    public void ClickOnOneChoise(View view) {
+        Intent intent = new Intent(QuestionSettingActivity.this, QuestionActivity.class);
+        question.setType("single-choice");
+        intent.putExtra("QUESTION", question);
+        startActivity(intent);
+        finish();
+    }
+
+    public void ClickOnMultiChoise(View view) {
+        Intent intent = new Intent(QuestionSettingActivity.this, QuestionActivity.class);
+        question.setType("multi-choice");
+        intent.putExtra("QUESTION", question);
+        startActivity(intent);
+        finish();
+    }
+
+    public void ClickOnSort(View view){
+        Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
+        question.setType("sort");
+        intent.putExtra("QUESTION",question);
+        startActivity(intent);
+        finish();
+    }
+    public  void ClickOnText(View view){
+        Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
+        question.setType("text");
+        intent.putExtra("QUESTION",question);
+        startActivity(intent);
+        finish();
+    }
+    public  void ClickOnTrueFalse(View view){
+        Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
+        question.setType("true-false");
+        intent.putExtra("QUESTION",question);
+        startActivity(intent);
+        finish();
+    }
+    public  void ClickOnConnect(View view){
+        Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
+        question.setType("connect");
+        intent.putExtra("QUESTION",question);
+        startActivity(intent);
+        finish();
     }
 }
