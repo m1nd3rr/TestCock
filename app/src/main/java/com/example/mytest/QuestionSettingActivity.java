@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.mytest.auth.Select;
 import com.example.mytest.model.Question;
 
 public class QuestionSettingActivity extends AppCompatActivity {
@@ -17,8 +18,7 @@ public class QuestionSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_setting);
 
-        Intent intent = getIntent();
-        question = (Question)intent.getSerializableExtra("QUESTION");
+        question = Select.getQuestion();
     }
 
     public void onBack(View view) {
@@ -31,7 +31,7 @@ public class QuestionSettingActivity extends AppCompatActivity {
     public void ClickOnOneChoise(View view) {
         Intent intent = new Intent(QuestionSettingActivity.this, QuestionActivity.class);
         question.setType("single-choice");
-        intent.putExtra("QUESTION", question);
+        Select.setQuestion(question);
         startActivity(intent);
         finish();
     }
@@ -39,7 +39,7 @@ public class QuestionSettingActivity extends AppCompatActivity {
     public void ClickOnMultiChoise(View view) {
         Intent intent = new Intent(QuestionSettingActivity.this, QuestionActivity.class);
         question.setType("multi-choice");
-        intent.putExtra("QUESTION", question);
+        Select.setQuestion(question);
         startActivity(intent);
         finish();
     }
@@ -47,28 +47,28 @@ public class QuestionSettingActivity extends AppCompatActivity {
     public void ClickOnSort(View view){
         Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
         question.setType("sort");
-        intent.putExtra("QUESTION",question);
+        Select.setQuestion(question);
         startActivity(intent);
         finish();
     }
     public  void ClickOnText(View view){
         Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
         question.setType("text");
-        intent.putExtra("QUESTION",question);
+        Select.setQuestion(question);
         startActivity(intent);
         finish();
     }
     public  void ClickOnTrueFalse(View view){
         Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
         question.setType("true-false");
-        intent.putExtra("QUESTION",question);
+        Select.setQuestion(question);
         startActivity(intent);
         finish();
     }
     public  void ClickOnConnect(View view){
         Intent intent = new Intent(QuestionSettingActivity.this,QuestionActivity.class);
         question.setType("connect");
-        intent.putExtra("QUESTION",question);
+        Select.setQuestion(question);
         startActivity(intent);
         finish();
     }

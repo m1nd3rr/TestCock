@@ -9,10 +9,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.example.mytest.adapter.AnswerAdapter;
+import com.example.mytest.auth.Select;
 import com.example.mytest.model.Answer;
 import com.example.mytest.model.Question;
 import com.example.mytest.repository.AnswerRepository;
@@ -39,8 +42,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.QuestionTitle);
 
-        Intent intent = getIntent();
-        question = (Question)intent.getSerializableExtra("QUESTION");
+        question = Select.getQuestion();
         editText.setText(question.getTitle());
         answerRepository = new AnswerRepository(FirebaseFirestore.getInstance());
         questionRepository = new QuestionRepository(FirebaseFirestore.getInstance());
@@ -136,20 +138,37 @@ public class QuestionActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.dialog_sort,null);
 
+        Spinner spinner = dialogView.findViewById(R.id.dialog_answer_sort_number);
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                getSortNumbers()
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Введите ответ")
                 .setView(dialogView)
                 .setPositiveButton("Создать", (dialog1, which) -> {
                     EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
-                    EditText editText2 = dialogView.findViewById(R.id.dialog_answer_sort_number);
 
-                    Answer answer = new Answer(null,editText.getText().toString(),true, question.getId(),Integer.parseInt(editText2.getText().toString()), null);
+                    Answer answer = new Answer(null,editText.getText().toString(),true, question.getId(), (Integer) spinner.getSelectedItem(), null);
                     answerList.add(answerRepository.addAnswer(answer));
                     answerAdapter.notifyItemInserted(answerList.size());
                 })
                 .setNegativeButton("Отмена", (dialog12, which) -> dialog12.dismiss())
                 .create();
         dialog.show();
+    }
+
+    private List<Integer> getSortNumbers() {
+        List<Integer> sortNumbers = new ArrayList<>();
+        for (int i = 1; i <= answerList.size() + 1; i++) {
+            sortNumbers.add(i);
+        }
+        return sortNumbers;
     }
 
     public void text(){
@@ -206,7 +225,7 @@ public class QuestionActivity extends AppCompatActivity {
                             question.setTitle(editText.getText().toString());
                             questionRepository.updateQuestion(question);
                             Intent intent = new Intent(this,CreateTestActivity.class);
-                            intent.putExtra("TEST", test);
+                            Select.setTest(test);
                             startActivity(intent);
                             finish();
                         });

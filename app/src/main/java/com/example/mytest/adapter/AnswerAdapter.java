@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import com.example.mytest.model.Question;
 import com.example.mytest.repository.AnswerRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerViewHolder> {
@@ -165,17 +168,25 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
                 View dialogView = inflater.inflate(R.layout.dialog_sort, null);
 
                 EditText editText = dialogView.findViewById(R.id.dialog_answer_editText);
-                EditText editText1 = dialogView.findViewById(R.id.dialog_answer_sort_number);
+                Spinner spinner = dialogView.findViewById(R.id.dialog_answer_sort_number);
 
                 editText.setText(answer.getContent());
-                editText1.setText(String.valueOf(answer.getSortNumber()));
+
+                ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                        v.getContext(),
+                        android.R.layout.simple_spinner_item,
+                        getSortNumbers()
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                spinner.setSelection(adapter.getPosition(answer.getSortNumber()));
 
                 AlertDialog dialog = new AlertDialog.Builder(v.getContext())
                         .setTitle("Отредактируйте ответ")
                         .setView(dialogView)
                         .setPositiveButton("Обновить", (dialog1, which) -> {
                             answer.setContent(editText.getText().toString());
-                            answer.setSortNumber(Integer.valueOf(editText1.getText().toString()));
+                            answer.setSortNumber((Integer) spinner.getSelectedItem());
 
                             answerRepository.updateAnswer(answer);
                             answerAdapter.notifyItemChanged(getAdapterPosition());
@@ -189,6 +200,14 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
 
                 dialog.show();
             });
+        }
+
+        private List<Integer> getSortNumbers() {
+            List<Integer> sortNumbers = new ArrayList<>();
+            for (int i = 1; i <= answerList.size(); i++) {
+                sortNumbers.add(i);
+            }
+            return sortNumbers;
         }
 
         private void text(Answer answer) {

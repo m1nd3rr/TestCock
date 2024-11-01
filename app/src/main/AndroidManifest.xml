@@ -16,6 +16,12 @@
         android:theme="@style/Theme.MyTest"
         tools:targetApi="31">
         <activity
+            android:name=".PrivateRoom"
+            android:exported="false" />
+        <activity
+            android:name=".PassingTestActivity"
+            android:exported="false" />
+        <activity
             android:name=".QuestionActivity"
             android:exported="false" />
         <activity

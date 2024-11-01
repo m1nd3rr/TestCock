@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mytest.adapter.TestAdapter;
 import com.example.mytest.auth.Authentication;
+import com.example.mytest.auth.Select;
 import com.example.mytest.model.Test;
 import com.example.mytest.repository.TestRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,7 +53,8 @@ public class TeacherProfileActivity extends AppCompatActivity {
         test.setTeacherId(Authentication.getTeacher().getId());
 
         Intent intent = new Intent(this, CreateTestActivity.class);
-        intent.putExtra("TEST", testRepository.addTest(test));
+        Select.setTest(testRepository.addTest(test));
         startActivity(intent);
+        finish();
     }
 }

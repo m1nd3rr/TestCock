@@ -14,7 +14,6 @@ import com.example.mytest.repository.TeacherRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginTeacherActivity extends AppCompatActivity {
-
     private EditText editTextEmail, editTextPassword;
     private TeacherRepository teacherRepository;
 

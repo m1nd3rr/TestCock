@@ -8,13 +8,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.mytest.adapter.AnswerAdapter;
 import com.example.mytest.adapter.QuestionAdapter;
 import com.example.mytest.auth.Authentication;
+import com.example.mytest.auth.Select;
 import com.example.mytest.model.Question;
+import com.example.mytest.model.Room;
 import com.example.mytest.model.Test;
 import com.example.mytest.repository.QuestionRepository;
+import com.example.mytest.repository.RoomRepository;
 import com.example.mytest.repository.TestRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -25,6 +29,7 @@ import java.util.List;
 public class CreateTestActivity extends AppCompatActivity {
 
     QuestionRepository questionRepository;
+    RoomRepository roomRepository;
     TestRepository testRepository;
     QuestionAdapter questionAdapter;
     List<Question> questionList = new ArrayList<>();
@@ -36,10 +41,10 @@ public class CreateTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_test);
 
-        Intent intent = getIntent();
-        test = (Test)intent.getSerializableExtra("TEST");
+        test = Select.getTest();
 
         questionRepository = new QuestionRepository(FirebaseFirestore.getInstance());
+        roomRepository = new RoomRepository(FirebaseFirestore.getInstance());
         testRepository = new TestRepository(FirebaseFirestore.getInstance());
         RecyclerView recyclerView = findViewById(R.id.rvQuestionsList);
         editText = findViewById(R.id.etTestTitle);
@@ -60,7 +65,7 @@ public class CreateTestActivity extends AppCompatActivity {
             question.setTestId(test.getId());
 
             Intent intentQuestion = new Intent(CreateTestActivity.this, QuestionSettingActivity.class);
-            intentQuestion.putExtra("QUESTION", questionRepository.addQuestion(question));
+            Select.setQuestion(questionRepository.addQuestion(question));
             startActivity(intentQuestion);
             finish();
         });
@@ -76,8 +81,16 @@ public class CreateTestActivity extends AppCompatActivity {
         });
     }
     public void onBackButtonClick(View view) {
-        Intent intent = new Intent(CreateTestActivity.this, CreateTestActivity.class);
+        Intent intent = new Intent(CreateTestActivity.this, TeacherProfileActivity.class);
         startActivity(intent);
         finish();
+    }
+
+
+    public void ClickOnRoom(View view) {
+        Room room = new Room();
+        room.setTestId(Select.getTest().getId());
+        roomRepository.addRoom(room);
+        Toast.makeText(this, room.getRoomNumber(), Toast.LENGTH_LONG).show();
     }
 }

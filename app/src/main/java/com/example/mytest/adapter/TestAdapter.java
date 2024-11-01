@@ -11,7 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mytest.CreateTestActivity;
+import com.example.mytest.PassingTestActivity;
 import com.example.mytest.R;
+import com.example.mytest.StudentProfileActivity;
+import com.example.mytest.auth.Select;
 import com.example.mytest.model.Test;
 
 import java.util.List;
@@ -57,8 +60,15 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestViewHolder
             text.setText("Тест " + (getAdapterPosition() + 1));
 
             text.setOnClickListener(view -> {
-                Intent intent = new Intent(context, CreateTestActivity.class);
-                intent.putExtra("TEST", test);
+                Intent intent;
+
+                if (context instanceof StudentProfileActivity) {
+                    intent = new Intent(context, PassingTestActivity.class);
+                } else {
+                    intent = new Intent(context, CreateTestActivity.class);
+                }
+
+                Select.setTest(test);
                 context.startActivity(intent);
             });
         }

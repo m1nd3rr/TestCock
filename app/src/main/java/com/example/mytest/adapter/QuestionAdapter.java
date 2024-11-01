@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mytest.R;
 import com.example.mytest.QuestionActivity;
+import com.example.mytest.auth.Select;
 import com.example.mytest.model.Question;
 
 import java.util.List;
@@ -58,7 +59,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
 
             text.setOnClickListener(view -> {
                 Intent intent = new Intent(context, QuestionActivity.class);
-                intent.putExtra("QUESTION", question);
+                Select.setQuestion(question);
                 context.startActivity(intent);
             });
         }
