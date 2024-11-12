@@ -27,34 +27,28 @@ public class TeacherProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_profile);
-        TextView textViewWelcome = findViewById(R.id.textViewWelcome);
-        Button buttonLogout = findViewById(R.id.buttonLogout);
-        RecyclerView recyclerView = findViewById(R.id.rvTestList);
-
         testRepository = new TestRepository(FirebaseFirestore.getInstance());
-        List<Test> testList = new ArrayList<>();
-
-        testRepository.getAllTestByTeacherId(Authentication.getTeacher().getId())
-                .thenAccept(list -> {
-                    testList.addAll(list);
-                    TestAdapter testAdapter = new TestAdapter(testList, this);
-                    recyclerView.setAdapter(testAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                });
-
-        textViewWelcome.setText("Добро пожаловать в профиль преподавателя!");
-        buttonLogout.setOnClickListener(view -> {
-            finish();
-        });
+        setCreateTest();
     }
 
     public void ClickOnCreateTest(View view) {
         Test test = new Test();
         test.setTeacherId(Authentication.getTeacher().getId());
-
         Intent intent = new Intent(this, CreateTestActivity.class);
         Select.setTest(testRepository.addTest(test));
         startActivity(intent);
         finish();
+    }
+
+    public void ClickOnTestHistory(View view) {
+        Intent intent = new Intent(this,TestHistory.class);
+        startActivity(intent);
+        finish();
+    }
+    public void setCreateTest(){
+        TextView textView = findViewById(R.id.createTest);
+        testRepository.getAllTestByTeacherId(Authentication.teacher.getId()).thenAccept(list ->{
+        textView.setText(String.valueOf(list.size()));
+        });
     }
 }

@@ -46,16 +46,16 @@ public class RegisterStudentActivity extends AppCompatActivity {
                         !email.isEmpty() && !password.isEmpty()) {
 
                     studentRepository.getStudentByEmail(email)
-                                    .thenAccept(find_student -> {
-                                        if(find_student == null){
-                                            Student student = new Student(firstName, lastName, groupNumber, password, email);
-                                            studentRepository.addStudent(student);
-                                            Authentication.setStudent(student);
-                                            Intent intent = new Intent(RegisterStudentActivity.this, StudentProfileActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        } else Toast.makeText(RegisterStudentActivity.this, "Такой студент уже есть", Toast.LENGTH_SHORT).show();
-                                    });
+                            .thenAccept(find_student -> {
+                                if(find_student == null){
+                                    Student student = new Student(null, firstName, lastName, groupNumber, password, email, null);
+                                    studentRepository.addStudent(student);
+                                    Authentication.setStudent(student);
+                                    Intent intent = new Intent(RegisterStudentActivity.this, StudentProfileActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else Toast.makeText(RegisterStudentActivity.this, "Такой студент уже есть", Toast.LENGTH_SHORT).show();
+                            });
                 } else {
                     Toast.makeText(RegisterStudentActivity.this, "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
                 }

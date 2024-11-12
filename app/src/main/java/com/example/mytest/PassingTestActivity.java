@@ -1,5 +1,6 @@
 package com.example.mytest;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -7,16 +8,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mytest.adapter.PassingAdapter;
+import com.example.mytest.auth.Authentication;
 import com.example.mytest.auth.Select;
 import com.example.mytest.model.Answer;
 import com.example.mytest.model.Question;
+import com.example.mytest.model.Result;
 import com.example.mytest.repository.AnswerRepository;
 import com.example.mytest.repository.QuestionRepository;
+import com.example.mytest.repository.ResultRepository;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -101,7 +106,30 @@ public class PassingTestActivity extends AppCompatActivity {
             i++;
             startPassing();
         } else {
-                Toast.makeText(this,"Количество верных ответов: " + rightAnswer,Toast.LENGTH_LONG).show();
+            Result resultAll = new Result();
+            resultAll.setUserId(Authentication.student.getId());
+            resultAll.setTestId(Select.getTest().getId());
+            resultAll.setCountAnswer(answerList.size());
+            resultAll.setCorrectAnswer(rightAnswer);
+            ResultRepository resultRepository = new ResultRepository(FirebaseFirestore.getInstance());
+            resultRepository.addResult(resultAll);
+            Toast.makeText(this,"Количество верных ответов: " + rightAnswer,Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this,StudentProfileActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
+    public void backButton(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle("Подтверждение выхода")
+                .setMessage("Вы действительно хотите выйти?")
+                .setPositiveButton("Выйти", (dialog, which) -> {
+                    Intent intent = new Intent(this, StudentProfileActivity.class);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("Остаться", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
 }

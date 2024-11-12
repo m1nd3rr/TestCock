@@ -47,18 +47,20 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestViewHolder
     }
 
     static class TestViewHolder extends RecyclerView.ViewHolder {
-        private TextView text;
+        private TextView text, number;
         private Context context;
 
         public TestViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
-            text = itemView.findViewById(R.id.testItemList);
+            text = itemView.findViewById(R.id.test_title);
+            number = itemView.findViewById(R.id.test_number);
+
             this.context = context;
         }
 
         public void bind(Test test) {
-            text.setText("Тест " + (getAdapterPosition() + 1));
-
+            number.setText(String.valueOf(getAdapterPosition() + 1));
+            text.setText(test.getTitle());
             text.setOnClickListener(view -> {
                 Intent intent;
 

@@ -26,8 +26,8 @@ public class StudentRepository {
         studentCollection.document(student.getId()).delete();
     }
 
-    public void updateStudent(Student student, Student newStudent) {
-        studentCollection.document(student.getId()).set(newStudent);
+    public void updateStudent(Student student) {
+        studentCollection.document(student.getId()).set(student);
     }
 
     public CompletableFuture<List<Student>> getAllStudent() {

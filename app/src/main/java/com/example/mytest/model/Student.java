@@ -7,13 +7,24 @@ public class Student {
     private String groupNumber;
     private String password;
     private String email;
+    private String photo;
 
-    public Student(String firstName, String lastName, String groupNumber, String password, String email) {
+    public Student(String id, String firstName, String lastName, String groupNumber, String password, String email, String photo) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.groupNumber = groupNumber;
         this.password = password;
         this.email = email;
+        this.photo = photo;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public Student() {

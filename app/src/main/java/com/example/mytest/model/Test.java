@@ -8,16 +8,18 @@ public class Test implements Serializable {
     private String teacherId;
     private String title;
     private transient Timestamp timestamp;
+    private String studentId;
 
     private String id;
 
     public Test() {
     }
 
-    public Test(String teacherId, String title, Timestamp timestamp, String id) {
+    public Test(String teacherId, String title, Timestamp timestamp, String studentId, String id) {
         this.teacherId = teacherId;
         this.title = title;
         this.timestamp = timestamp;
+        this.studentId = studentId;
         this.id = id;
     }
 
@@ -52,4 +54,12 @@ public class Test implements Serializable {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
+
+    public String getStudentId() {
+        return studentId;
+    }
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
 }

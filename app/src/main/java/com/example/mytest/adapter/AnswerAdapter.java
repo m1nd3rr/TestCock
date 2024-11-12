@@ -1,8 +1,6 @@
 package com.example.mytest.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +51,7 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
         return answerList.size();
     }
     static class AnswerViewHolder extends RecyclerView.ViewHolder {
-        private final TextView text;
+        private final TextView text,number;
         private final AnswerRepository answerRepository;
         private final AnswerAdapter answerAdapter;
         private final List<Answer> answerList;
@@ -61,16 +59,18 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.AnswerView
 
         public AnswerViewHolder(@NonNull View itemView, AnswerAdapter answerAdapter, List<Answer> answerList, Question question) {
             super(itemView);
-            text = itemView.findViewById(R.id.answer_item);
+            text = itemView.findViewById(R.id.answer_title);
             this.answerAdapter = answerAdapter;
             this.answerList = answerList;
             this.question = question;
             answerRepository = new AnswerRepository(FirebaseFirestore.getInstance());
+            number = itemView.findViewById(R.id.answer_item);
         }
 
         public void bind(Answer answer) {
             text.setText(answer.getContent());
-
+            number.setText(String.valueOf(getAdapterPosition() + 1));
+            text.setText(answer.getContent());
             switch (question.getType()) {
                 case "multi-choice":
                     multiChoose(answer);

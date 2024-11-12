@@ -213,7 +213,7 @@ public class QuestionActivity extends AppCompatActivity {
 
     }
     public void onBackButton(View view) {
-        Intent intent = new Intent(QuestionActivity.this, QuestionSettingActivity.class);
+        Intent intent = new Intent(QuestionActivity.this, CreateTestActivity.class);
         startActivity(intent);
         finish();
     }

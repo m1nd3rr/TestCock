@@ -22,4 +22,5 @@ public class Authentication {
     public static void setTeacher(Teacher teacher) {
         Authentication.teacher = teacher;
     }
+
 }

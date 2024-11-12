@@ -1,10 +1,12 @@
 package com.example.mytest.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,7 +38,6 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     public void onBindViewHolder(@NonNull QuestionViewHolder holder, int position) {
         Question question = questionList.get(position);
         holder.bind(question);
-
     }
 
     @Override
@@ -45,22 +46,27 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.Questi
     }
 
     static class QuestionViewHolder extends RecyclerView.ViewHolder {
-        private TextView text;
+        private TextView text, number;
+        private LinearLayout layout;
         private Context context;
 
         public QuestionViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
-            text = itemView.findViewById(R.id.question_item);
+            text = itemView.findViewById(R.id.question_title);
+            number = itemView.findViewById(R.id.question_number);
+            layout = itemView.findViewById(R.id.question_item);
             this.context = context;
         }
 
         public void bind(Question question) {
-            text.setText("Вопрос " + (getAdapterPosition() + 1));
+            number.setText(String.valueOf(getAdapterPosition() + 1));
+            text.setText(question.getTitle());
 
-            text.setOnClickListener(view -> {
+            layout.setOnClickListener(view -> {
                 Intent intent = new Intent(context, QuestionActivity.class);
                 Select.setQuestion(question);
                 context.startActivity(intent);
+                ((Activity) context).finish();
             });
         }
     }

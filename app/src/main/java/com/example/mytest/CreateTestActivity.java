@@ -43,6 +43,10 @@ public class CreateTestActivity extends AppCompatActivity {
 
         test = Select.getTest();
 
+        if (Authentication.getStudent() != null) {
+            findViewById(R.id.btnPublishTest).setVisibility(View.GONE);
+        }
+
         questionRepository = new QuestionRepository(FirebaseFirestore.getInstance());
         roomRepository = new RoomRepository(FirebaseFirestore.getInstance());
         testRepository = new TestRepository(FirebaseFirestore.getInstance());
@@ -75,14 +79,24 @@ public class CreateTestActivity extends AppCompatActivity {
             test.setTitle(editText.getText().toString());
             testRepository.updateTest(test);
 
-            Intent intentProfile = new Intent(this, TeacherProfileActivity.class);
+            Intent intentProfile;
+            if (Authentication.student != null) {
+                intentProfile = new Intent(this, StudentProfileActivity.class);
+            } else {
+                intentProfile = new Intent(this, TeacherProfileActivity.class);
+            }
             startActivity(intentProfile);
             finish();
         });
     }
     public void onBackButtonClick(View view) {
-        Intent intent = new Intent(CreateTestActivity.this, TeacherProfileActivity.class);
-        startActivity(intent);
+        Intent intentProfile;
+        if (Authentication.student != null) {
+            intentProfile = new Intent(this, StudentProfileActivity.class);
+        } else {
+            intentProfile = new Intent(this, TeacherProfileActivity.class);
+        }
+        startActivity(intentProfile);
         finish();
     }
 
